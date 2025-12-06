@@ -1,0 +1,40 @@
+
+
+/*
+Primary: #FF6B35 (vibrant orange)
+Secondary: #6B5B95 (soft purple)
+Background: #F7F9FC (light gray/white)
+X Color: #FF6B35 (orange)
+O Color: #6B5B95 (purple)
+Winning Line: #FFD166 (sunny yellow for pop)
+
+Fonts:  Fredoka One (X's and O's highly readable)
+Silkscreen / Press Start 2P
+Press Start 2p for larger things, such as headings
+Silkscreen for smaller text and descriptive items
+*/
+
+header{
+    display: flex;
+    justify-content: center;
+}
+
+main{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#playArea{
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    grid-template-rows: repeat(3, auto);
+    width: 500px;
+    height: 450px;
+    border: 2px solid black;
+}
+
+.cell{
+     border: 2px solid #6B5B95; 
+}
