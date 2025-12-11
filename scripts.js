@@ -1,24 +1,38 @@
+// Player factory for two players
+const Player = function (name) {
 
+    this.name = name;
+    let score = 0;
+    const increaseScore = () => score++;
+    const getScore = () => score;
+
+    const getName = () => name;
+    const setName = (newName) => { name = newName };
+
+    let symbol = null;
+    const getSymbol = () => symbol;
+    const setSymbol = (newSymbol) => { symbol = newSymbol };
+
+    return { setName, getName, increaseScore, getScore, setSymbol, getSymbol };
+}
 
 // IIFE since there is only one gameboard
 const GameboardController = (function () {
-    const gameBoard = [null, null, null, null, null, null, null, null, null];
-
+    let gameBoard = [null, null, null, null, null, null, null, null, null];
     const getBoard = () => gameBoard;
 
-    const markBoardArray = (index) => {
-        if (gameBoard[index] === null) {
-            if (currentPlayerTurn === 1){
-                gameBoard[index] = "X";
-            }
-            else{
-                gameBoard[index] = "O";
-            }
+    const resetBoard = () => gameBoard = [null, null, null, null, null, null, null, null, null];
+
+
+    const markBoardInArray = (symbol, index) => {
+
+        if(gameBoard[index] !== null){
+            alert("This square is full, play elsewhere!");  
         }
         else{
-            alert("This cell was already played!");
+            gameBoard[index] = symbol;
         }
-    };
+    }
 
     const checkWin =  (gameBoard) => {
         const winPatterns = [
@@ -54,38 +68,29 @@ const GameboardController = (function () {
 
     // Big composite function, this should run through the entire chain of events
 
-    return { markBoardArray, checkWin, getBoard  };
+    return { markBoardInArray, checkWin, getBoard, resetBoard };
 })();
 
-// Player factory for two players
-const Player = function (name) {
 
-    this.name = name;
-    let score = 0;
-    const increaseScore = () => score++;
-    const getScore = () => score;
-
-    const getName = () => name;
-    const setName = (newName) => { name = newName };
-
-    let symbol = null;
-    const getSymbol = () => symbol;
-    const setSymbol = (newSymbol) => { symbol = newSymbol };
-
-    return { setName, getName, increaseScore, getScore, setSymbol, getSymbol };
-}
 
 // updating the visualls.
 const displayController = (function (){
     const cells = document.querySelectorAll(".cell");
 
-    const addClickers = () => {
-        cells.forEach(cell => {
-            cell.addEventListener("click", function(){
-                gameController.handleCellClick(this.datacCellIndex);
-            });
+    const displayBoard = () => {
+        cells.forEach(cell =>{
+
         });
-    };
+    }
+
+const addClickers = (clickHandler) => {  // ← Add parameter here
+    cells.forEach(cell => {
+        cell.addEventListener("click", function(){
+            // Use the parameter instead of gameController directly
+            clickHandler(this.dataset.cellIndex);  // ← Changed this line
+        });
+    });
+};
     return { addClickers };
 })();
 
@@ -94,6 +99,7 @@ const gameController = (function () {
 
     let startingPlayer = Math.floor(Math.random() * 2) + 1;
     let currentPlayerTurn = startingPlayer;
+    let player1, player2;
 
     const getCurrentPlayerTurn = () => currentPlayerTurn;
 
@@ -113,18 +119,25 @@ const gameController = (function () {
         player1 = new Player("Keagan");
         player2 = new Player("Chun-li");
         player1.setSymbol("X");
-        player2.setSymbol("Y");
-        displayController.addClickers();
+        player2.setSymbol("O");
+        displayController.addClickers(handleCellClick);
     };
 
     const handleCellClick = (index) => {
-        console.log(this);
-        /* depening on the turn will mark the cell
+        
+        if (currentPlayerTurn === 1){
+            GameboardController.markBoardInArray(player1.getSymbol(), index);
+        }
+        else{
+            GameboardController.markBoardInArray(player2.getSymbol(), index);
+        }
+        console.log(GameboardController.getBoard());
+        switchTurn();
+                /* depening on the turn will mark the cell
          then will check for win, if return {winner:} object we conclude the game
          if return null the game continues by swapping the current turn by changing the currentTurn variable using the switchTurn Function
         */
     };
-
     return { getCurrentPlayerTurn, handleCellClick, switchTurn, startGame };
 })();
 
